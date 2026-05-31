@@ -85,13 +85,7 @@ CREATE POLICY "Users can create conversations" ON public.conversations FOR INSER
 -- Conversation Participants Policies
 CREATE POLICY "Users can view participants for their conversations" 
 ON public.conversation_participants FOR SELECT 
-USING (
-    EXISTS (
-        SELECT 1 FROM public.conversation_participants cp
-        WHERE cp.conversation_id = conversation_participants.conversation_id 
-        AND cp.user_id = auth.uid()
-    )
-);
+USING (true);
 CREATE POLICY "Users can add participants" ON public.conversation_participants FOR INSERT WITH CHECK (true);
 
 -- Messages Policies

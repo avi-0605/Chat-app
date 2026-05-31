@@ -104,21 +104,60 @@ export default function ChatList() {
 
   const startChat = async (target) => {
     setModalLoading(true);
-    const { data: myPart } = await supabase.from('conversation_participants').select('conversation_id').eq('user_id', currentUser.id);
-    const myCids = myPart?.map(p => p.conversation_id) || [];
-    if (myCids.length) {
-      const { data: shared } = await supabase.from('conversation_participants').select('conversation_id')
-        .in('conversation_id', myCids).eq('user_id', target.id).limit(1);
-      if (shared?.length) { setModalOpen(false); navigate(`/chat/${shared[0].conversation_id}`); return; }
+    setModalErr('');
+    try {
+      const { data: myPart, error: partErr } = await supabase
+        .from('conversation_participants')
+        .select('conversation_id')
+        .eq('user_id', currentUser.id);
+      
+      if (partErr) throw partErr;
+
+      const myCids = myPart?.map(p => p.conversation_id) || [];
+      if (myCids.length) {
+        const { data: shared, error: sharedErr } = await supabase
+          .from('conversation_participants')
+          .select('conversation_id')
+          .in('conversation_id', myCids)
+          .eq('user_id', target.id)
+          .limit(1);
+
+        if (sharedErr) throw sharedErr;
+
+        if (shared?.length) {
+          setModalOpen(false);
+          navigate(`/chat/${shared[0].conversation_id}`);
+          return;
+        }
+      }
+
+      const { data: conv, error: convErr } = await supabase
+        .from('conversations')
+        .insert({})
+        .select()
+        .single();
+      
+      if (convErr) throw convErr;
+
+      const { error: insertPartErr } = await supabase
+        .from('conversation_participants')
+        .insert([
+          { conversation_id: conv.id, user_id: currentUser.id },
+          { conversation_id: conv.id, user_id: target.id },
+        ]);
+
+      if (insertPartErr) throw insertPartErr;
+
+      setModalOpen(false);
+      navigate(`/chat/${conv.id}`);
+    } catch (err) {
+      console.error('Error starting chat:', err);
+      setModalErr(err.message || 'Could not start chat. Please verify your database schema has been created.');
+    } finally {
+      setModalLoading(false);
     }
-    const { data: conv } = await supabase.from('conversations').insert({}).select().single();
-    await supabase.from('conversation_participants').insert([
-      { conversation_id: conv.id, user_id: currentUser.id },
-      { conversation_id: conv.id, user_id: target.id },
-    ]);
-    setModalOpen(false);
-    navigate(`/chat/${conv.id}`);
   };
+
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
