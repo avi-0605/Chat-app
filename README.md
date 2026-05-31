@@ -4,6 +4,20 @@ ChitrChatr is a modern, responsive, and secure real-time mobile chat application
 
 ---
 
+# 🔗 Project Links
+
+## GitHub Repository
+
+Repository Link:
+https://github.com/avi-0605/Chat-app
+
+## Google Drive Submission
+
+Drive Folder (APK + Project Files + Recording):
+https://drive.google.com/drive/folders/1IV7E_7AaqHgFWjc89f7ZpY36OtWxBNhh?usp=sharing
+
+---
+
 ## 🚀 Key Features
 
 *   **Secure Authentication**: Fully integrated email/password registration and login with session persistence.
@@ -193,3 +207,13 @@ npx cap open android
 *   In Android Studio, let Gradle sync complete.
 *   Navigate to **Build** -> **Build Bundle(s) / APK(s)** -> **Build APK(s)**.
 *   Once finished, a popup will display in the bottom right corner showing the location of the compiled `app-debug.apk` file!
+
+
+## 🧪 Test Accounts
+
+| User   | Email                                   | Password    |
+| ------ | --------------------------------------- | ----------- |
+| User 1 | [user1@test.com](mailto:user1@test.com) | password123 |
+| User 2 | [user2@test.com](mailto:user2@test.com) | password123 |
+| User 3 | [user3@test.com](mailto:user3@test.com) | password123 |
+
